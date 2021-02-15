@@ -1,16 +1,19 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import createSagaMiddleware from "redux-saga";
+
+import citiesReducer from '../features/cities/citiesSlice';
+import citiesSaga from '../features/cities/citiesSaga'
+
+let sagaMiddleware = createSagaMiddleware();
+const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    cities: citiesReducer
   },
+  middleware
 });
 
+sagaMiddleware.run(citiesSaga);
+
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
